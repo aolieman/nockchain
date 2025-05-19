@@ -217,6 +217,27 @@ pub fn bitcoin_watcher_driver(
             let wire = SystemWire.to_wire();
             match node_type {
                 GenesisNodeType::Leader => {
+                    // leader also needs %btc-data to complete do-born
+                    let mut poke_slab = NounSlab::new();
+                    let test_block = get_test_block();
+                    debug!(
+                        "Using test block: hash={}, height={}",
+                        test_block.hash, test_block.height
+                    );
+
+                    // Send a %btc-data command with just the block hash
+                    let hash_tuple = block_hash_to_belts(&mut poke_slab, &test_block.hash);
+                    let poke_noun = T(
+                        &mut poke_slab,
+                        &[D(tas!(b"command")), D(tas!(b"btc-data")), hash_tuple],
+                    );
+                    poke_slab.set_root(poke_noun);
+
+                    handle.poke(wire, poke_slab).await?;
+                    debug!("btc-data command for fake genesis block sent successfully");
+
+                    // original poke
+                    let wire = SystemWire.to_wire();
                     debug!("Creating test genesis block for leader node");
                     let poke_slab = make_test_genesis_block(&message);
                     handle.poke(wire, poke_slab).await?;
