@@ -143,7 +143,7 @@
       ~&  ;;([thing=@t ver=@ type=@t] [-.dat +<.dat +>-.dat])
       `k
     =/  cause  u.cause
-    ::~&  "inner dumbnet cause: {<[-.cause -.+.cause]>}"
+    ~&  "inner dumbnet cause: {<[-.cause -.+.cause]>}"
     =^  effs  k
       ?+    wir  ~|("unsupported wire: {<wir>}" !!)
           [%poke src=?(%nc %timer %sys %miner %npc) ver=@ *]
@@ -362,7 +362,7 @@
      =/  check-pow-hash=?
       ?.  check-pow-flag:t
          ::  this case only happens during testing
-         ::~&  "skipping pow hash check for {(trip (to-b58:hash:t digest.pag))}"
+         ~&  "skipping pow hash check for {(trip (to-b58:hash:t digest.pag))}"
          %.y
        %-  check-target:mine
        :_  target.pag
@@ -638,7 +638,7 @@
     ++  handle-command
       |=  [now=@da =command:dk]
       ^-  [(list effect:dk) kernel-state:dk]
-      ::  ~&  "handling command: {<-.command>}"
+      ~&  "handling command: {<-.command>}"
       ?:  &(?=(init-command:dk -.command) !init.a.k)
         ::  kernel no longer in init phase, can't do init command
         ~>  %slog.[0 leaf+"kernel no longer in init phase, can't do init command"]
@@ -711,7 +711,7 @@
         ^-  [(list effect:dk) kernel-state:dk]
         ?>  ?=([%mine *] command)
         ?:  =(*(z-set lock:t) pubkeys.m.k)
-          ::~&  "cannot mine without first setting pubkey with %set-mining-key"
+          ~&  "cannot mine without first setting pubkey with %set-mining-key"
           `k
         ?.  mining.m.k
           `k
@@ -734,8 +734,8 @@
         =/  =lock:t  (new:lock:t pk)
         =.  m.k  (set-pubkeys:min [lock]~)
         =.  m.k  (set-shares:min [lock 100]~)
-        ::  ~&  >  "pubkeys.m set to {<pubkeys.m.k>}"
-        ::  ~&  >  "shares.m set to {<shares.m.k>}"
+        ~&  >  "pubkeys.m set to {<pubkeys.m.k>}"
+        ~&  >  "shares.m set to {<shares.m.k>}"
         `k
       ::
       ++  do-set-mining-key-advanced
@@ -758,33 +758,33 @@
           [(from-b58:lock:t m ks) s]
         =.  m.k  (set-pubkeys:min keys)
         =.  m.k  (set-shares:min shares)
-        ::  ~&  >  "pubkeys.m set to {<pubkeys.m.k>}"
-        ::  ~&  >  "shares.m set to {<shares.m.k>}"
+        ~&  >  "pubkeys.m set to {<pubkeys.m.k>}"
+        ~&  >  "shares.m set to {<shares.m.k>}"
         `k
       ::
       ++  do-enable-mining
         ^-  [(list effect:dk) kernel-state:dk]
         ?>  ?=([%enable-mining *] command)
         ?.  p.command
-          ::~&  >  'generation of candidate blocks disabled'
+          ~&  >  'generation of candidate blocks disabled'
           =.  m.k  (set-mining:min p.command)
           `k
         ?:  =(*(z-set lock:t) pubkeys.m.k)
-          ::  ~&  >
-          ::      """
-          ::      generation of candidate blocks has not been enabled because mining pubkey
-          ::      is empty. set it with %set-mining-key then run %enable-mining again
-          ::      """
+          ~&  >
+              """
+              generation of candidate blocks has not been enabled because mining pubkey
+              is empty. set it with %set-mining-key then run %enable-mining again
+              """
           `k
         ?:  =(~ heaviest-block.c.k)
-          ::~&  >
-          ::    """
-          ::    generation of candidate blocks enabled. candidate block will be generated
-          ::    once a genesis block has been received.
-          ::    """
+          ~&  >
+             """
+             generation of candidate blocks enabled. candidate block will be generated
+             once a genesis block has been received.
+             """
           =.  m.k  (set-mining:min p.command)
           `k
-        ::~&  >  'generation of candidate blocks enabled.'
+        ~&  >  'generation of candidate blocks enabled.'
         =.  m.k  (set-mining:min p.command)
         =.  m.k  (heard-new-block:min c.k p.k now)
         `k
