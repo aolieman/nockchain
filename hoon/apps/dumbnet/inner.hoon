@@ -143,7 +143,7 @@
       ~&  ;;([thing=@t ver=@ type=@t] [-.dat +<.dat +>-.dat])
       `k
     =/  cause  u.cause
-    ~&  "inner dumbnet cause: {<[-.cause -.+.cause]>}"
+    :: ~&  "inner dumbnet cause: {<[-.cause -.+.cause]>}"
     =^  effs  k
       ?+    wir  ~|("unsupported wire: {<wir>}" !!)
           [%poke src=?(%nc %timer %sys %miner %npc) ver=@ *]
@@ -824,7 +824,7 @@
           (new-genesis:page:t genesis-template now)
         =.  candidate-block.m.k  genesis-page
         =.  c.k  (add-btc-data:con btc-hash.p.command)
-        `k
+        (heard-block /poke/miner now genesis-page eny)
       ::
       ++  do-btc-data
         ^-  [(list effect:dk) kernel-state:dk]
