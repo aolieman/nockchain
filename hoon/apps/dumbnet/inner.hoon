@@ -358,53 +358,60 @@
           (~(has z-by pending-blocks.p.k) digest)
       ==
     ::
+    ++  bool-to-text
+      |=  val=?
+      ^-  @t
+      ?:  val  "true"  "false"
+    ::
     ++  check-genesis
-     |=  [pag=page:t =btc-hash:t =genesis-seal:t]
-     ^-  ?
-     ~&  "skip pow in check-genesis for {(trip (to-b58:hash:t digest.pag))}"
-     =/  check-pow-hash=?  %.y
-     :: ?.  check-pow-flag:t
-     ::    ::  this case only happens during testing
-     ::    ~&  "skipping pow hash check for {(trip (to-b58:hash:t digest.pag))}"
-     ::    %.y
-     ::  %-  check-target:mine
-     ::  :_  target.pag
-     ::  (digest-to-atom:tip5:zeke (hash-proof:zeke (need pow.pag)))
-     =/  check-pow-valid=?  (check-pow pag)
-     =/  check-txs=?  =(tx-ids.pag *(z-set tx-id:t))
-     =/  check-epoch=?  =(epoch-counter.pag *@)
-     =/  check-target=?  =(target.pag genesis-target:t)
-     =/  check-work=?  =(accumulated-work.pag (compute-work:page:t genesis-target:t))
-     =/  check-coinbase=?  =(coinbase.pag *(z-map lock:t @))
-     =/  check-height=?  =(height.pag *page-number:t)
-     =/  check-btc-hash=?
-       =(parent.pag (hash:btc-hash:t btc-hash))
-     ::
-     ::  check that the message matches what's in the seal
-     =/  check-msg=?
-       ?~  genesis-seal  %.y
-       =((hash:page-msg:t msg.pag) msg-hash.u.genesis-seal)
-     ~&  "check-pow-hash: {(trip check-pow-hash)}"
-     ~&  "check-pow-valid: {(trip check-pow-valid)}"
-     ~&  "check-txs: {(trip check-txs)}"
-     ~&  "check-epoch: {(trip check-epoch)}"
-     ~&  "check-target: {(trip check-target)}"
-     ~&  "check-work: {(trip check-work)}"
-     ~&  "check-coinbase: {(trip check-coinbase)}"
-     ~&  "check-height: {(trip check-height)}"
-     ~&  "check-msg: {(trip check-msg)}"
-     ~&  "check-btc-hash: {(trip check-btc-hash)}"
-     ?&  check-pow-hash
-         check-pow-valid
-         check-txs
-         check-epoch
-         check-target
-         check-work
-         check-coinbase
-         check-height
-         check-msg
-         check-btc-hash
-     ==
+      |=  [pag=page:t =btc-hash:t =genesis-seal:t]
+      ^-  ?
+      ~&  "always pass check-genesis for {(trip (to-b58:hash:t digest.pag))}"
+      =/  check-pow-hash=?  %.y
+      :: ?.  check-pow-flag:t
+      ::    ::  this case only happens during testing
+      ::    ~&  "skipping pow hash check for {(trip (to-b58:hash:t digest.pag))}"
+      ::    %.y
+      ::  %-  check-target:mine
+      ::  :_  target.pag
+      ::  (digest-to-atom:tip5:zeke (hash-proof:zeke (need pow.pag)))
+      =/  check-pow-valid=?  (check-pow pag)
+      =/  check-txs=?  =(tx-ids.pag *(z-set tx-id:t))
+      =/  check-epoch=?  =(epoch-counter.pag *@)
+      =/  check-target=?  =(target.pag genesis-target:t)
+      =/  check-work=?  =(accumulated-work.pag (compute-work:page:t genesis-target:t))
+      =/  check-coinbase=?  =(coinbase.pag *(z-map lock:t @))
+      =/  check-height=?  =(height.pag *page-number:t)
+      =/  check-btc-hash=?
+        =(parent.pag (hash:btc-hash:t btc-hash))
+      ::
+      ::  check that the message matches what's in the seal
+      =/  check-msg=?
+        ?~  genesis-seal  %.y
+        =((hash:page-msg:t msg.pag) msg-hash.u.genesis-seal)
+      ~&  "check-pow-hash: {(bool-to-text check-pow-hash)}"
+      ~&  "check-pow-valid: {(bool-to-text check-pow-valid)}"
+      ~&  "check-txs: {(bool-to-text check-txs)}"
+      ~&  "check-epoch: {(bool-to-text check-epoch)}"
+      ~&  "check-target: {(bool-to-text check-target)}"
+      ~&  "check-work: {(bool-to-text check-work)}"
+      ~&  "check-coinbase: {(bool-to-text check-coinbase)}"
+      ~&  "check-height: {(bool-to-text check-height)}"
+      ~&  "check-msg: {(bool-to-text check-msg)}"
+      ~&  "check-btc-hash: {(bool-to-text check-btc-hash)}"
+      :: ?&  check-pow-hash
+      ::     check-pow-valid
+      ::     check-txs
+      ::     check-epoch
+      ::     check-target
+      ::     check-work
+      ::     check-coinbase
+      ::     check-height
+      ::     check-msg
+      ::     check-btc-hash
+      :: ==
+      %.y
+    ::
     ++  check-pow
       |=  pag=page:t
       ^-  ?
