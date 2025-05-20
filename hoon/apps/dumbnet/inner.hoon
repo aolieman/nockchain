@@ -371,7 +371,7 @@
       =/  head  i.pairs
       =/  tail  t.pairs
       ~&  "{(trip p.head)}: {(bool-to-text q.head)}"
-      $(pairs tail)
+      %-  show-bools  tail 
     ::
     ++  check-genesis
       |=  [pag=page:t =btc-hash:t =genesis-seal:t]
