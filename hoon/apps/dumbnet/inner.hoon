@@ -364,7 +364,7 @@
       ?:  b  "true"  "false"
     ::
     ++  show-bools
-      |=  pairs=@
+      |=  pairs=*
       ?~  pairs
         ~
       =/  head  i.pairs
