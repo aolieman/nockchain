@@ -361,15 +361,15 @@
     ++  check-genesis
      |=  [pag=page:t =btc-hash:t =genesis-seal:t]
      ^-  ?
-     ~&  "checking genesis {(trip (to-b58:hash:t digest.pag))}"
-     =/  check-pow-hash=?
-      ?.  check-pow-flag:t
-         ::  this case only happens during testing
-         ~&  "skipping pow hash check for {(trip (to-b58:hash:t digest.pag))}"
-         %.y
-       %-  check-target:mine
-       :_  target.pag
-       (digest-to-atom:tip5:zeke (hash-proof:zeke (need pow.pag)))
+     ~&  "skip pow in check-genesis for {(trip (to-b58:hash:t digest.pag))}"
+     =/  check-pow-hash=?  %.y
+     :: ?.  check-pow-flag:t
+     ::    ::  this case only happens during testing
+     ::    ~&  "skipping pow hash check for {(trip (to-b58:hash:t digest.pag))}"
+     ::    %.y
+     ::  %-  check-target:mine
+     ::  :_  target.pag
+     ::  (digest-to-atom:tip5:zeke (hash-proof:zeke (need pow.pag)))
      =/  check-pow-valid=?  (check-pow pag)
      =/  check-txs=?  =(tx-ids.pag *(z-set tx-id:t))
      =/  check-epoch=?  =(epoch-counter.pag *@)
