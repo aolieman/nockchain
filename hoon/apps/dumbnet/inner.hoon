@@ -364,7 +364,7 @@
       ?:  b  "true"  "false"
     ::
     ++  show-bools
-      |=  pairs=(list [@t ?])
+      |=  pairs=@
       ?~  pairs
         ~
       =/  head  i.pairs
