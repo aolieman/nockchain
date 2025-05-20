@@ -401,15 +401,16 @@
         =((hash:page-msg:t msg.pag) msg-hash.u.genesis-seal)
       %-  show-bools
         ;~  ["check-pow-hash" check-pow-hash]
-            ["check-pow-valid" check-pow-valid]
-            ["check-txs" check-txs]
-            ["check-epoch" epoch-counter]
-            ["check-target" target]
-            ["check-work" accumulated-work]
-            ["check-coinbase" coinbase]
-            ["check-height" height]
-            ["check-msg" check-msg]
-            ["check-btc-hash" check-btc-hash]
+          ["check-pow-valid" check-pow-valid]
+          ["check-txs" check-txs]
+          ["check-epoch" epoch-counter]
+          ["check-target" target]
+          ["check-work" accumulated-work]
+          ["check-coinbase" coinbase]
+          ["check-height" height]
+          ["check-msg" check-msg]
+          ["check-btc-hash" check-btc-hash]
+        ==
       :: ?&  check-pow-hash
       ::     check-pow-valid
       ::     check-txs
