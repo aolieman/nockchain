@@ -399,7 +399,17 @@
       =/  check-msg=?
         ?~  genesis-seal  %.y
         =((hash:page-msg:t msg.pag) msg-hash.u.genesis-seal)
-      =/  print-out=~  (show-bools (list ["check-pow-hash" check-pow-hash] ["check-pow-valid" check-pow-valid] ["check-txs" check-txs] ["check-epoch" check-epoch] ["check-target" check-target] ["check-work" check-work] ["check-coinbase" check-coinbase] ["check-height" check-height] ["check-msg" check-msg] ["check-btc-hash" check-btc-hash]))
+      %-  show-bools
+        ;~  ["check-pow-hash" check-pow-hash]
+            ["check-pow-valid" check-pow-valid]
+            ["check-txs" check-txs]
+            ["check-epoch" epoch-counter]
+            ["check-target" target]
+            ["check-work" accumulated-work]
+            ["check-coinbase" coinbase]
+            ["check-height" height]
+            ["check-msg" check-msg]
+            ["check-btc-hash" check-btc-hash]
       :: ?&  check-pow-hash
       ::     check-pow-valid
       ::     check-txs
