@@ -364,7 +364,7 @@
       ?:(b 'true' 'false')
     ::
     ++  show-bools
-      |=  pairs=*
+      |=  pairs=(list [@t ?])
       ?~  pairs
         ~
       =/  head  i.pairs
@@ -399,6 +399,7 @@
         ?~  genesis-seal  %.y
         =((hash:page-msg:t msg.pag) msg-hash.u.genesis-seal)
       =/  null-show
+        ^.  limo
         %-  show-bools
           :~  ["check-pow-hash" check-pow-hash]
               ["check-pow-valid" check-pow-valid]
