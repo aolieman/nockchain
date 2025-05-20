@@ -361,7 +361,7 @@
     ++  bool-to-text
       |=  b=?
       ^-  @t
-      ?:(b "true" "false")
+      ?:(b 'true' 'false')
     ::
     ++  show-bools
       |=  pairs=*
