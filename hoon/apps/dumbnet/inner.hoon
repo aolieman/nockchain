@@ -358,19 +358,19 @@
           (~(has z-by pending-blocks.p.k) digest)
       ==
     ::
-    ++  bool-to-text
-      |=  b=?
-      ^-  @t
-      ?:(b 'true' 'false')
-    ::
-    ++  show-bools
-      |=  pairs=*
-      ?~  pairs
-        ~
-      =/  head  i.pairs
-      =/  tail  t.pairs
-      ~&  "{(trip p.head)}: {(bool-to-text q.head)}"
-      %-  show-bools  tail 
+    :: ++  bool-to-text
+    ::   |=  b=?
+    ::   ^-  @t
+    ::   ?:(b 'true' 'false')
+    :: ::
+    :: ++  show-bools
+    ::   |=  pairs=*
+    ::   ?~  pairs
+    ::     ~
+    ::   =/  head  i.pairs
+    ::   =/  tail  t.pairs
+    ::   ~&  "{(trip p.head)}: {(bool-to-text q.head)}"
+    ::   %-  show-bools  tail 
     ::
     ++  check-genesis
       |=  [pag=page:t =btc-hash:t =genesis-seal:t]
