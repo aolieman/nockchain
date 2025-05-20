@@ -359,9 +359,19 @@
       ==
     ::
     ++  bool-to-text
-      |=  val=?
+      |=  b=?
       ^-  @t
-      ?:  val  "true"  "false"
+      ?:  b  "true"  "false"
+    ::
+    ++  show-bools
+      |=  pairs=(list [@t ?])
+      ^-  !
+      ?~  pairs
+        ~
+      =/  head  i.pairs
+      =/  tail  t.pairs
+      ~&  "{(trip p.head)}: {(bool-to-text q.head)}"
+      $(pairs tail)
     ::
     ++  check-genesis
       |=  [pag=page:t =btc-hash:t =genesis-seal:t]
@@ -389,16 +399,20 @@
       =/  check-msg=?
         ?~  genesis-seal  %.y
         =((hash:page-msg:t msg.pag) msg-hash.u.genesis-seal)
-      ~&  "check-pow-hash: {(bool-to-text check-pow-hash)}"
-      ~&  "check-pow-valid: {(bool-to-text check-pow-valid)}"
-      ~&  "check-txs: {(bool-to-text check-txs)}"
-      ~&  "check-epoch: {(bool-to-text check-epoch)}"
-      ~&  "check-target: {(bool-to-text check-target)}"
-      ~&  "check-work: {(bool-to-text check-work)}"
-      ~&  "check-coinbase: {(bool-to-text check-coinbase)}"
-      ~&  "check-height: {(bool-to-text check-height)}"
-      ~&  "check-msg: {(bool-to-text check-msg)}"
-      ~&  "check-btc-hash: {(bool-to-text check-btc-hash)}"
+      (show-bools
+        (list
+          ["check-pow-hash" check-pow-hash]
+          ["check-pow-valid" check-pow-valid]
+          ["check-txs" check-txs]
+          ["check-epoch" check-epoch]
+          ["check-target" check-target]
+          ["check-work" check-work]
+          ["check-coinbase" check-coinbase]
+          ["check-height" check-height]
+          ["check-msg" check-msg]
+          ["check-btc-hash" check-btc-hash]
+        )
+      )
       :: ?&  check-pow-hash
       ::     check-pow-valid
       ::     check-txs
