@@ -7,6 +7,8 @@ We believe the future of blockchains is lightweight trustless settlement of heav
 
 *Nockchain is entirely experimental and many parts are unaudited. We make no representations or guarantees as to the behavior of this software.*
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/aolieman/nockchain)
+
 
 ## Setup
 
