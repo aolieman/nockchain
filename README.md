@@ -7,6 +7,7 @@ Nockchain is a ZK-Proof of Work blockchain that combines sound money incentives 
 
 *Nockchain is entirely experimental and many parts are unaudited. We make no representations or guarantees as to the behavior of this software.*
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/aolieman/nockchain)
 
 ## Setup
 
