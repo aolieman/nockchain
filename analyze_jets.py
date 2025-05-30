@@ -39,40 +39,42 @@ class JetInfo:
 
 
 def extract_hoon_jet_hints(hoon_dirs, jets_by_label):
-    hint_pattern = re.compile(r"^\s*(~%|~/)\s*%([\w\-]+)", re.IGNORECASE)
+    hint_pattern = re.compile(r"^\s*(~%|~/)\s*%([\w\-\.]+)", re.IGNORECASE)
+    # TODO: support hints that follow another rune on the same line, e.g. +add:rd
     for hoon_dir in hoon_dirs:
         for hoon_file in hoon_dir.rglob("*.hoon"):
             context = EnvContext.ZKVM
             if "crates" in str(hoon_file):
                 context = EnvContext.HOON
 
-            indent_lvl = 0
+            indent_stack: list[int] = [0]
             hint_path: list[str] = []
-            for line in hoon_file.read_text(
+            for hoon_line in hoon_file.read_text(
                 encoding="utf-8", errors="ignore"
             ).splitlines():
-                match = hint_pattern.match(line)
+                match = hint_pattern.match(hoon_line)
                 if match:
-                    line_indent_lvl = match.start(1)
-                    sigrune, tas = match.groups()
-                    if sigrune == "~%":
-                        hint_path = [tas]
+                    line_indent = match.start(1)
+                    tas = match.group(2)
+                    # Going deeper
+                    if line_indent > indent_stack[-1]:
+                        indent_stack.append(line_indent)
+                        hint_path.append(tas)
+                    # Same level
+                    elif line_indent and line_indent == indent_stack[-1]:
+                        hint_path[-1] = tas
+                    # Going up
                     else:
-                        # Same-level hint: replace last
-                        if line_indent_lvl == indent_lvl:
-                            hint_path[-1] = tas
-                        elif line_indent_lvl < indent_lvl:
-                            # Going up
-                            depth = line_indent_lvl // 2 + 1
-                            hint_path = hint_path[:depth] + [tas]
-                        else:
-                            # Going deeper
-                            hint_path.append(tas)
+                        while indent_stack[-1] and line_indent <= indent_stack[-1]:
+                            indent_stack.pop()
+                            hint_path.pop()
+
+                        indent_stack.append(line_indent)
+                        hint_path.append(tas)
 
                     hint_tuple = tuple(hint_path)
                     jets_by_label[hint_tuple].hinted = True
                     jets_by_label[hint_tuple].context.add(context)
-                    indent_lvl = line_indent_lvl
 
 
 def extract_rust_jet_functions(rust_dirs, jets_by_label):
