@@ -3,6 +3,7 @@ from enum import StrEnum
 from pathlib import Path
 import re
 import sys
+from typing import Sequence
 
 ROOT = Path(__file__).parent.resolve()
 HOON_DIRS = [
@@ -93,7 +94,7 @@ def extract_rust_jet_functions(rust_dirs, jets_by_label):
             ).splitlines():
                 match = fn_pattern.search(line)
                 if match:
-                    label, fn_name = find_jet_label(match, jets_by_label)
+                    label, fn_name = find_jet_label(match, context, jets_by_label)
                     if fn_name in (
                         "assert_jet",
                         "jet_mure",
@@ -113,15 +114,18 @@ def extract_rust_jet_functions(rust_dirs, jets_by_label):
 
 
 def find_jet_label(
-    fn_match: re.Match[str], jets_by_label: dict[tuple[str], JetInfo]
+    fn_match: re.Match[str], ctx: EnvContext, jets_by_label: dict[tuple[str], JetInfo]
 ) -> tuple[tuple[str], str]:
     fn = (fn_match.group(1) or fn_match.group(2)).lower()
     name = fn_match.group(0).strip().split()[1]
     tokens = tuple(fn.split("_"))
     kebab = "-".join(tokens)
     best_fuzzy: tuple[str] = tuple()
-    for label in jets_by_label.keys():
-        if label[-1] == kebab:
+    for label, jet_info in jets_by_label.items():
+        if ctx not in jet_info.context:
+            continue
+
+        if label[-1] == kebab and len(tokens) > 1:
             # e.g. bpoly-to-list
             return label, name
         elif label[-len(tokens) :] == tokens:
@@ -141,7 +145,6 @@ def find_jet_label(
 
 def extract_hotentry_paths(rust_dirs, jets_by_label):
     entry_pattern = re.compile(r"&\[(.*?)\]\s*,\s*\d+\s*,\s*([\w\d_]+)", re.DOTALL)
-    # entry_pattern = re.compile(r"&\[(.*?)\],\s*\d+,\s*(\w+_jet)", re.DOTALL)
     left_pattern = re.compile(r'Left\(b"([\w\-]+)"\)')
 
     for rust_dir in rust_dirs:
@@ -156,27 +159,57 @@ def extract_hotentry_paths(rust_dirs, jets_by_label):
                 if not hot_path:
                     continue
 
-                best_match_len = 0
-                best_label = tuple()
-                for label in jets_by_label.keys():
-                    # compare hot_path items with label items in order
-                    common_label = [item for item in label if item in hot_path]
-                    common_hot = [item for item in hot_path if item in label]
-                    if common_label == common_hot:
-                        isect_size = len(common_hot)
-                        if isect_size > best_match_len or (
-                            label[-1] in rust_fn and isect_size == best_match_len
-                        ):
-                            best_match_len = len(common_hot)
-                            best_label = label
-
-                final = best_label or tuple(hot_path[-3:])
-                jets_by_label[final].paths.add("/".join(hot_path))
-                jets_by_label[final].rust_fns.add(rust_fn)
+                for label, jet_info in jets_by_label.items():
+                    if rust_fn in jet_info.rust_fns:
+                        final = label
+                        break
+                else:
+                    final = match_hot_to_label(
+                        hot_path, rust_fn, jets_by_label
+                    ) or tuple(hot_path[-3:])
                 if "zeke" in hot_path:
+                    if tuple(hot_path[-len(final) :]) == final:
+                        final = tuple(hot_path)
+                        jets_by_label[final] = jets_by_label.pop(label, JetInfo())
+
                     jets_by_label[final].context.add(EnvContext.ZKVM)
                 else:
                     jets_by_label[final].context.add(EnvContext.HOON)
+
+                jets_by_label[final].paths.add("/".join(hot_path))
+                jets_by_label[final].rust_fns.add(rust_fn)
+
+
+def match_hot_to_label(
+    hot_path: Sequence[str], rust_fn: str, jets_by_label: dict[tuple[str], JetInfo]
+) -> tuple[str]:
+    best_match_len = 0
+    best_label = tuple()
+    for label in jets_by_label.keys():
+        # compare hot_path items with label items in order
+        common_label = [item for item in label if item in hot_path]
+        common_hot = [item for item in hot_path if item in label]
+        if common_label == common_hot:
+            isect_size = len(common_hot)
+            if (
+                isect_size > best_match_len
+                or isect_size == best_match_len
+                and (label[-1] in rust_fn or len(label) < len(best_label))
+            ):
+                best_match_len = len(common_hot)
+                best_label = label
+
+    return best_label
+
+
+def find_tripen_index(seq: Sequence) -> int:
+    tripen = ("tri", "qua", "pen")
+    n = len(tripen)
+    for i in range(len(seq) - n + 1):
+        if tuple(seq[i : i + n]) == tripen:
+            return i
+
+    raise ValueError(f"tri-pen not found in sequence: {seq}")
 
 
 def prune_hint_only_parents(jets_by_label: dict[tuple[str], JetInfo]):
@@ -211,26 +244,26 @@ def main():
             k for k, v in jets_by_label.items() if context_name in v.context
         ]
 
-        hints_not_rust = sorted(
+        hints_not_rust = [
             k
             for k in context_keys
             if jets_by_label[k].hinted and not jets_by_label[k].rust_fns
-        )
-        rust_not_hints = sorted(
+        ]
+        rust_not_hints = [
             k
             for k in context_keys
             if jets_by_label[k].rust_fns and not jets_by_label[k].hinted
-        )
-        hot_without_hints = sorted(
+        ]
+        hot_without_hints = [
             k
             for k in context_keys
             if jets_by_label[k].paths and not jets_by_label[k].hinted
-        )
-        rust_without_hot = sorted(
+        ]
+        rust_without_hot = [
             k
             for k in context_keys
             if jets_by_label[k].rust_fns and not jets_by_label[k].paths
-        )
+        ]
 
         def print_keys_and_values(keys, title):
             print(f"{title}: {len(keys)}")
