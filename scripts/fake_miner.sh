@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+# This script builds the fakenet miner and runs it.
+# Run from ~/nockchain
+# ./scripts/fake_miner.sh [--hoon] |& tee "fake-miner/logs/fake-$(date +%s).log
+
 # Only build if explicitly requested
 if [[ "${1:-}" == "--hoon" ]]; then
   make fakenet-assets
