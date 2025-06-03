@@ -5,6 +5,12 @@ use crate::jets::Jet;
 use crate::mem::{NockStack, Preserve};
 use crate::noun::{Noun, Slots};
 use std::ptr::{copy_nonoverlapping, null_mut};
+use std::collections::HashMap;
+use std::sync::Mutex;
+
+lazy_static::lazy_static! {
+    static ref JET_COUNTS: Mutex<HashMap<&'static str, usize>> = Mutex::new(HashMap::new());
+}
 
 
 macro_rules! jet_name {
@@ -166,11 +172,10 @@ impl Warm {
         let warm_it = self.0.lookup(stack, f)?;
         for (path, batteries, jet) in warm_it {
             if batteries.matches(stack, *s) {
-                println!(
-                    "Using jet: {} at path: {:?}",
-                    jet_name!(jet),
-                    path
-                );
+                let name = jet_name!(jet);
+                let mut counts = JET_COUNTS.lock().unwrap();
+                *counts.entry(name).or_insert(0) += 1;
+                // TODO: print counts periodically
                 return Some((jet, path));
             }
         }
