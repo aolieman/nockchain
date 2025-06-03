@@ -5,6 +5,13 @@ use crate::jets::Jet;
 use crate::mem::{NockStack, Preserve};
 use crate::noun::{Noun, Slots};
 use std::ptr::{copy_nonoverlapping, null_mut};
+use std::any::type_name;
+
+
+fn jet_name<T>(_: T) -> &'static str {
+    type_name::<T>()
+}
+
 
 /// key = formula
 #[derive(Copy, Clone)]
@@ -122,9 +129,20 @@ impl Warm {
                     .expect("IMPOSSIBLE: empty battery entry in cold state");
                 if let Ok(mut formula) = unsafe { (*battery).slot_atom(axis) } {
                     warm.insert(stack, &mut formula, path, batteries, jet);
+                    println!(
+                        "Registered jet: {} at path: {:?}",
+                        jet_name(jet),
+                        path
+                    );
                 } else {
                     //  XX: need NockStack allocated string interpolation
-                    // eprintln!("Bad axis {} into formula {:?}", axis, battery);
+                    eprintln!(
+                        "Failed to register jet: {} at path: {:?} (bad axis {:?} into battery {:?})",
+                        jet_name(jet),
+                        path,
+                        axis, 
+                        battery
+                    );
                     continue;
                 }
             }
@@ -144,9 +162,18 @@ impl Warm {
         let warm_it = self.0.lookup(stack, f)?;
         for (path, batteries, jet) in warm_it {
             if batteries.matches(stack, *s) {
+                println!(
+                    "Using jet: {} at path: {:?}",
+                    jet_name(jet),
+                    path
+                );
                 return Some((jet, path));
             }
         }
+        println!(
+            "No jet matched for formula: {:?}",
+            f
+        );
         None
     }
 }
