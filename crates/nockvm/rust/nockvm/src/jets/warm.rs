@@ -5,11 +5,15 @@ use crate::jets::Jet;
 use crate::mem::{NockStack, Preserve};
 use crate::noun::{Noun, Slots};
 use std::ptr::{copy_nonoverlapping, null_mut};
-use std::any::type_name;
 
 
-fn jet_name<T>(_: T) -> &'static str {
-    type_name::<T>()
+macro_rules! jet_name {
+    ($f:expr) => {{
+        fn type_of<T>(_: T) -> &'static str {
+            std::any::type_name::<T>()
+        }
+        type_of($f)
+    }};
 }
 
 
@@ -131,14 +135,14 @@ impl Warm {
                     warm.insert(stack, &mut formula, path, batteries, jet);
                     println!(
                         "Registered jet: {} at path: {:?}",
-                        jet_name(jet),
+                        jet_name!(jet),
                         path
                     );
                 } else {
                     //  XX: need NockStack allocated string interpolation
                     eprintln!(
                         "Failed to register jet: {} at path: {:?} (bad axis {:?} into battery {:?})",
-                        jet_name(jet),
+                        jet_name!(jet),
                         path,
                         axis, 
                         battery
@@ -164,7 +168,7 @@ impl Warm {
             if batteries.matches(stack, *s) {
                 println!(
                     "Using jet: {} at path: {:?}",
-                    jet_name(jet),
+                    jet_name!(jet),
                     path
                 );
                 return Some((jet, path));
