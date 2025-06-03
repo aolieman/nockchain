@@ -107,3 +107,16 @@ assets/miner.jam: update-hoonc hoon/apps/dumbnet/miner.hoon $(HOON_SRCS)
 	$(call show_env_vars)
 	RUST_LOG=trace hoonc hoon/apps/dumbnet/miner.hoon hoon
 	mv out.jam assets/miner.jam
+
+## Fakenet assets
+fakenet-dumb.jam: update-hoonc hoon/apps/dumbnet/outer.hoon $(HOON_SRCS)
+	$(call show_env_vars)
+	RUST_LOG=trace hoonc hoon/apps/dumbnet/outer.hoon hoon
+	mv out.jam fake-assets/dumb.jam
+
+fakenet-miner.jam: update-hoonc hoon/apps/dumbnet/miner.hoon $(HOON_SRCS)
+	$(call show_env_vars)
+	RUST_LOG=trace hoonc hoon/apps/dumbnet/miner.hoon hoon
+	mv out.jam fake-assets/miner.jam
+
+fakenet-assets: fakenet-dumb.jam fakenet-miner.jam
