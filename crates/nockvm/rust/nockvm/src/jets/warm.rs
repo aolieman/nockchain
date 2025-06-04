@@ -21,14 +21,21 @@ fn increment_jet_counter(jet: Jet) {
 pub fn reset_and_print_jet_counters() {
     let map = JET_COUNTERS.get_or_init(|| Mutex::new(HashMap::new()));
     let mut map = map.lock().unwrap();
-    if !map.is_empty() {
+
+    // Only print if at least one jet was used >= 100 times
+    if map.values().any(|&count| count >= 100) {
         println!("Jet usage since last report:");
         for (jet_fn, count) in map.iter() {
-            println!("  {:30} {}", rsjet_name(*jet_fn), count);
+            if *count >= 100 {
+                println!("  {:30} {}", rsjet_name(*jet_fn), count);
+            }
         }
         map.clear();
+    } else {
+        map.clear(); // Still reset to avoid unbounded growth
     }
 }
+
 
 
 fn rsjet_name(jet: Jet) -> &'static str {
