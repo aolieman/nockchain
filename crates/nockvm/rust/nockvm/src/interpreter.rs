@@ -499,7 +499,7 @@ pub fn interpret(context: &mut Context, mut subject: Noun, formula: Noun) -> Res
             match work {
                 NockWork::Done => {
                     write_trace(context);
-                    reset_and_print_rsjet_counters();
+                    // reset_and_print_rsjet_counters();
 
                     let stack = &mut context.stack;
                     debug_assertions(stack, orig_subject);
