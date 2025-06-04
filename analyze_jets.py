@@ -82,7 +82,9 @@ def extract_rust_jet_functions(rust_dirs, jets_by_label):
     fn_pattern = re.compile(r"\s*fn\s+(?:(\w+)_jet|jet_(\w+))")
     for rust_dir in rust_dirs:
         for rust_file in rust_dir.rglob("*.rs"):
-            if "zkvm-jetpack" in str(rust_file):
+            if rust_file.name in ("aes.rs", "ed.rs"):
+                context = EnvContext.ZKVM
+            elif "zkvm-jetpack" in str(rust_file):
                 context = EnvContext.ZKVM
             elif "nockvm" in str(rust_file):
                 context = EnvContext.HOON

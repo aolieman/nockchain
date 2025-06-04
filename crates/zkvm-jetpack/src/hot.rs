@@ -14,7 +14,7 @@ use crate::jets::verifier_jets::*;
 use crate::jets::mega_jets::*;
 
 pub fn produce_prover_hot_state() -> Vec<HotEntry> {
-    index_zkvm_jet_names();
+    index_zkvm_rsjet_names();
     let mut jets: Vec<HotEntry> = Vec::new();
     jets.extend(BASE_FIELD_JETS);
     jets.extend(BASE_POLY_JETS);
@@ -579,7 +579,7 @@ pub const CURVE_JETS: &[HotEntry] = &[(
 )];
 
 
-pub fn index_zkvm_jet_names() {
+pub fn index_zkvm_rsjet_names() {
     let mut m = JET_NAME_MAP.lock().expect("Failed to lock JET_NAME_MAP");
     // XTRA_JETS
     m.insert(mary_weld_jet as Jet, "mary_weld_jet");

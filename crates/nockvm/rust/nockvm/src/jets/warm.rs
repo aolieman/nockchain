@@ -12,13 +12,13 @@ use std::sync::{Mutex, OnceLock};
 
 static JET_COUNTERS: OnceLock<Mutex<HashMap<Jet, usize>>> = OnceLock::new();
 
-fn increment_jet_counter(jet: Jet) {
+fn increment_rsjet_counter(jet: Jet) {
     let map = JET_COUNTERS.get_or_init(|| Mutex::new(HashMap::new()));
     let mut map = map.lock().unwrap();
     *map.entry(jet).or_insert(0) += 1;
 }
 
-pub fn reset_and_print_jet_counters() {
+pub fn reset_and_print_rsjet_counters() {
     let map = JET_COUNTERS.get_or_init(|| Mutex::new(HashMap::new()));
     let mut map = map.lock().unwrap();
 
@@ -219,7 +219,7 @@ impl Warm {
         let warm_it = self.0.lookup(stack, f)?;
         for (path, batteries, jet) in warm_it {
             if batteries.matches(stack, *s) {
-                increment_jet_counter(jet);
+                increment_rsjet_counter(jet);
                 return Some((jet, path));
             }
         }
