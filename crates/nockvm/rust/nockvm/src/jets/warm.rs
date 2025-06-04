@@ -20,6 +20,32 @@ fn rsjet_name(jet: Jet) -> &'static str {
 }
 
 
+fn noun_to_label_path(mut n: Noun) -> Vec<String> {
+    let mut labels = Vec::new();
+
+    // Walk the cons‐list until we hit a non‐cell (i.e. an atom or “empty”).
+    while n.is_cell() {
+        let cell = n.as_cell().unwrap();            // unwrap Cell
+        let head = cell.head();                     // the first element of this cons cell
+        if head.is_atom() {
+            let a = head.as_atom().unwrap();        // unwrap Atom         
+            match std::str::from_utf8(a.as_ne_bytes()) {  // raw “@tas” bytes
+                Ok(a_str) => labels.push(a_str.trim_end_matches('\0').to_string()),
+                Err(_) => labels.push(format!("{:?}", head)),
+            }
+        } else {
+            // If for some reason it isn’t a pure atom (shouldn't happen
+            // if Hot::init only conses raw “tas” atoms), we fallback:
+            labels.push(format!("{:?}", head));
+        }
+        n = cell.tail(); // move down the list
+    }
+
+    labels.reverse(); // because Hot::init built it in reverse order
+    labels
+}
+
+
 /// key = formula
 #[derive(Copy, Clone)]
 pub struct Warm(Hamt<WarmEntry>);
@@ -139,14 +165,14 @@ impl Warm {
                     println!(
                         "Registered jet: {} at path: {:?}",
                         rsjet_name(jet),
-                        path
+                        noun_to_label_path(path)
                     );
                 } else {
                     //  XX: need NockStack allocated string interpolation
                     eprintln!(
                         "Failed to register jet: {} at path: {:?} (bad axis {:?} into battery {:?})",
                         rsjet_name(jet),
-                        path,
+                        noun_to_label_path(path),
                         axis, 
                         battery
                     );
