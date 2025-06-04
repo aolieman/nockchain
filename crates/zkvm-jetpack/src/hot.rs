@@ -1,5 +1,7 @@
 use either::Either::*;
+use nockvm::jets::Jet;
 use nockvm::jets::hot::{HotEntry, K_138};
+use nockvm::jets::names::JET_NAME_MAP;
 
 use crate::jets::base_jets::*;
 use crate::jets::bp_jets::*;
@@ -12,6 +14,7 @@ use crate::jets::verifier_jets::*;
 use crate::jets::mega_jets::*;
 
 pub fn produce_prover_hot_state() -> Vec<HotEntry> {
+    index_zkvm_jet_names();
     let mut jets: Vec<HotEntry> = Vec::new();
     jets.extend(BASE_FIELD_JETS);
     jets.extend(BASE_POLY_JETS);
@@ -560,3 +563,51 @@ pub const CURVE_JETS: &[HotEntry] = &[(
     1,
     ch_scal_jet,
 )];
+
+
+pub fn index_zkvm_jet_names() {
+    let mut m = JET_NAME_MAP.lock().expect("Failed to lock JET_NAME_MAP");
+    // XTRA_JETS
+    m.insert(mary_weld_jet as Jet, "mary_weld_jet");
+    m.insert(mary_swag_jet as Jet, "mary_swag_jet");
+    m.insert(evaluate_deep_jet as Jet, "evaluate_deep_jet");
+    m.insert(mary_transpose_jet as Jet, "mary_transpose_jet");
+    m.insert(mpeval_jet as Jet, "mpeval_jet");
+    // EXTENSION_FIELD_JETS
+    m.insert(bp_shift_jet as Jet, "bp_shift_jet");
+    m.insert(bp_coseword_jet as Jet, "bp_coseword_jet");
+    m.insert(fadd_jet as Jet, "fadd_jet");
+    m.insert(fsub_jet as Jet, "fsub_jet");
+    m.insert(fneg_jet as Jet, "fneg_jet");
+    m.insert(fmul_jet as Jet, "fmul_jet");
+    m.insert(finv_jet as Jet, "finv_jet");
+    m.insert(fdiv_jet as Jet, "fdiv_jet");
+    m.insert(fpow_jet as Jet, "fpow_jet");
+    m.insert(mp_substitute_mega_jet as Jet, "mp_substitute_mega_jet");
+    // BASE_FIELD_JETS
+    m.insert(badd_jet as Jet, "badd_jet");
+    m.insert(bsub_jet as Jet, "bsub_jet");
+    m.insert(bneg_jet as Jet, "bneg_jet");
+    m.insert(bmul_jet as Jet, "bmul_jet");
+    m.insert(ordered_root_jet as Jet, "ordered_root_jet");
+    m.insert(bpow_jet as Jet, "bpow_jet");
+    // BASE_POLY_JETS
+    m.insert(bpoly_to_list_jet as Jet, "bpoly_to_list_jet");
+    m.insert(bpadd_jet as Jet, "bpadd_jet");
+    m.insert(bpneg_jet as Jet, "bpneg_jet");
+    m.insert(bpsub_jet as Jet, "bpsub_jet");
+    m.insert(bpscal_jet as Jet, "bpscal_jet");
+    m.insert(bpmul_jet as Jet, "bpmul_jet");
+    m.insert(bp_hadamard_jet as Jet, "bp_hadamard_jet");
+    m.insert(bp_ntt_jet as Jet, "bp_ntt_jet");
+    m.insert(bp_fft_jet as Jet, "bp_fft_jet");
+    m.insert(bp_ifft_jet as Jet, "bp_ifft_jet");
+    // ZTD_JETS
+    m.insert(permutation_jet as Jet, "permutation_jet");
+    // KEYGEN_JETS
+    m.insert(argon2_jet as Jet, "argon2_jet");
+    // CURVE_JETS
+    m.insert(ch_scal_jet as Jet, "ch_scal_jet");
+    // MISSING JETS
+    m.insert(init_bpoly_jet as Jet, "init_bpoly_jet");
+}

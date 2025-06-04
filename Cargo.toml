@@ -142,6 +142,7 @@ hickory-proto = "0.25.0-alpha.4"
 image = "0.24.7"
 # libp2p = "0.55.0"
 libp2p = { git = "https://github.com/libp2p/rust-libp2p.git", rev = "da0017ee887a868e231ed78c7de892779c17800d" }
+once_cell = "1.21.3"
 qrcode = "0.13"
 quickcheck = "1.0.3"
 quickcheck_macros = "1.0"

@@ -9,6 +9,7 @@ pub mod list;
 pub mod lock;
 pub mod lute;
 pub mod math;
+pub mod names;
 pub mod nock;
 pub mod parse;
 pub mod serial;

@@ -1,5 +1,6 @@
 use crate::hamt::Hamt;
 use crate::jets::cold::{Batteries, Cold};
+use crate::jets::names::JET_NAME_MAP;
 use crate::jets::hot::Hot;
 use crate::jets::Jet;
 use crate::mem::{NockStack, Preserve};
@@ -13,13 +14,9 @@ lazy_static::lazy_static! {
 }
 
 
-macro_rules! jet_name {
-    ($f:expr) => {{
-        fn type_of<T>(_: T) -> &'static str {
-            std::any::type_name::<T>()
-        }
-        type_of($f)
-    }};
+fn rsjet_name(jet: Jet) -> &'static str {
+    let map =JET_NAME_MAP.lock().expect("JET_NAME_MAP is locked during lookup");
+    map.get(&jet).copied().unwrap_or("unknown_jet")
 }
 
 
@@ -141,14 +138,14 @@ impl Warm {
                     warm.insert(stack, &mut formula, path, batteries, jet);
                     println!(
                         "Registered jet: {} at path: {:?}",
-                        jet_name!(jet),
+                        rsjet_name(jet),
                         path
                     );
                 } else {
                     //  XX: need NockStack allocated string interpolation
                     eprintln!(
                         "Failed to register jet: {} at path: {:?} (bad axis {:?} into battery {:?})",
-                        jet_name!(jet),
+                        rsjet_name(jet),
                         path,
                         axis, 
                         battery
@@ -172,7 +169,7 @@ impl Warm {
         let warm_it = self.0.lookup(stack, f)?;
         for (path, batteries, jet) in warm_it {
             if batteries.matches(stack, *s) {
-                let name = jet_name!(jet);
+                let name = rsjet_name(jet);
                 let mut counts = JET_COUNTS.lock().unwrap();
                 *counts.entry(name).or_insert(0) += 1;
                 // TODO: print counts periodically
