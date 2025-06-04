@@ -4674,11 +4674,13 @@
 ::    4d: parsing (tracing)
 +|  %parsing-tracing
 ::
-++  last  |=  [zyc=hair naz=hair]                       ::  farther trace
-          ^-  hair
-          ?:  =(p.zyc p.naz)
-            ?:((gth q.zyc q.naz) zyc naz)
-          ?:((gth p.zyc p.naz) zyc naz)
+++  last
+  ~/  %last
+  |=  [zyc=hair naz=hair]                       ::  farther trace
+  ^-  hair
+  ?:  =(p.zyc p.naz)
+    ?:((gth q.zyc q.naz) zyc naz)
+  ?:((gth p.zyc p.naz) zyc naz)
 ::
 ++  lust  |=  [weq=char naz=hair]                       ::  detect newline
           ^-  hair
