@@ -2,7 +2,7 @@ use crate::hamt::Hamt;
 use crate::jets::cold::Cold;
 use crate::jets::hot::Hot;
 use crate::jets::list::util::weld;
-use crate::jets::warm::Warm;
+use crate::jets::warm::{Warm, reset_and_print_jet_counters};
 use crate::jets::{cold, JetErr};
 use crate::mem::{NockStack, Preserve};
 use crate::noun::{Atom, Cell, IndirectAtom, Noun, Slots, D, T};
@@ -499,6 +499,7 @@ pub fn interpret(context: &mut Context, mut subject: Noun, formula: Noun) -> Res
             match work {
                 NockWork::Done => {
                     write_trace(context);
+                    reset_and_print_jet_counters();
 
                     let stack = &mut context.stack;
                     debug_assertions(stack, orig_subject);

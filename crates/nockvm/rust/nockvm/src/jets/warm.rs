@@ -7,10 +7,27 @@ use crate::mem::{NockStack, Preserve};
 use crate::noun::{Noun, Slots};
 use std::ptr::{copy_nonoverlapping, null_mut};
 use std::collections::HashMap;
-use std::sync::Mutex;
+use std::sync::{Mutex, OnceLock};
 
-lazy_static::lazy_static! {
-    static ref JET_COUNTS: Mutex<HashMap<&'static str, usize>> = Mutex::new(HashMap::new());
+
+static JET_COUNTERS: OnceLock<Mutex<HashMap<Jet, usize>>> = OnceLock::new();
+
+fn increment_jet_counter(jet: Jet) {
+    let map = JET_COUNTERS.get_or_init(|| Mutex::new(HashMap::new()));
+    let mut map = map.lock().unwrap();
+    *map.entry(jet).or_insert(0) += 1;
+}
+
+pub fn reset_and_print_jet_counters() {
+    let map = JET_COUNTERS.get_or_init(|| Mutex::new(HashMap::new()));
+    let mut map = map.lock().unwrap();
+    if !map.is_empty() {
+        println!("Jet usage since last report:");
+        for (jet_fn, count) in map.iter() {
+            println!("  {:30} {}", rsjet_name(*jet_fn), count);
+        }
+        map.clear();
+    }
 }
 
 
@@ -195,10 +212,7 @@ impl Warm {
         let warm_it = self.0.lookup(stack, f)?;
         for (path, batteries, jet) in warm_it {
             if batteries.matches(stack, *s) {
-                let name = rsjet_name(jet);
-                let mut counts = JET_COUNTS.lock().unwrap();
-                *counts.entry(name).or_insert(0) += 1;
-                // TODO: print counts periodically
+                increment_jet_counter(jet);
                 return Some((jet, path));
             }
         }
