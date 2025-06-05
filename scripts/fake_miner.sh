@@ -18,4 +18,5 @@ cargo run --manifest-path ../Cargo.toml --release -p nockchain --target-dir ../t
     --mining-pubkey $MINING_PUBKEY \
     --mine \
     --new-peer-id \
-    --no-default-peers
+    --no-default-peers \
+    --trace
