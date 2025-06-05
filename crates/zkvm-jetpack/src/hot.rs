@@ -464,6 +464,7 @@ pub const BASE_POLY_JETS: &[HotEntry] = &[
             Left(b"qua"),
             Left(b"pen"),
             Left(b"zeke"),
+            Left(b"ext-field"),
             Left(b"bp-ntt"),
         ],
         1,
@@ -478,6 +479,7 @@ pub const BASE_POLY_JETS: &[HotEntry] = &[
             Left(b"qua"),
             Left(b"pen"),
             Left(b"zeke"),
+            Left(b"ext-field"),
             Left(b"bp-fft"),
         ],
         1,
@@ -492,6 +494,7 @@ pub const BASE_POLY_JETS: &[HotEntry] = &[
             Left(b"qua"),
             Left(b"pen"),
             Left(b"zeke"),
+            Left(b"ext-field"),
             Left(b"bp-ifft"),
         ],
         1,
@@ -616,6 +619,7 @@ pub fn index_zkvm_rsjet_names() {
     m.insert(bp_ntt_jet as Jet, "bp_ntt_jet");
     m.insert(bp_fft_jet as Jet, "bp_fft_jet");
     m.insert(bp_ifft_jet as Jet, "bp_ifft_jet");
+    m.insert(init_bpoly_jet as Jet, "init_bpoly_jet");
     // ZTD_JETS
     m.insert(permutation_jet as Jet, "permutation_jet");
     // KEYGEN_JETS
@@ -623,5 +627,4 @@ pub fn index_zkvm_rsjet_names() {
     // CURVE_JETS
     m.insert(ch_scal_jet as Jet, "ch_scal_jet");
     // MISSING JETS
-    m.insert(init_bpoly_jet as Jet, "init_bpoly_jet");
 }
