@@ -179,7 +179,9 @@ impl Warm {
         let mut warm = Self::new(stack);
         for (mut path, axis, jet) in *hot {
             let batteries_list = cold.find(stack, &mut path);
+            let mut found = false;
             for batteries in batteries_list {
+                found = true;
                 let mut batteries_tmp = batteries;
                 let (battery, _parent_axis) = batteries_tmp
                     .next()
@@ -202,6 +204,14 @@ impl Warm {
                     );
                     continue;
                 }
+            }
+            if !found {
+                eprintln!(
+                    "No batteries found for jet: {} at path: {:?} (axis: {:?})",
+                    rsjet_name(jet),
+                    noun_to_label_path(path),
+                    axis
+                );
             }
         }
         warm
