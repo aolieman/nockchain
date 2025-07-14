@@ -9,6 +9,7 @@ export RUST_BACKTRACE ?= full
 export RUST_LOG ?= info,nockchain=info,nockchain_libp2p_io=info,libp2p=info,libp2p_quic=info
 export MINIMAL_LOG_FORMAT ?= true
 export MINING_PKH ?= 9yPePjfWAdUnzaQKyxcRXKRa5PpUzKKEwtpECBZsUYt9Jd7egSDEWoV
+export RUSTFLAGS=-C target-cpu=native -C opt-level=3
 export
 
 .PHONY: build
